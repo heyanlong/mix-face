@@ -51,9 +51,6 @@ def cropEyes(frame):
     # detect the face at grayscale image
     te = detect(gray)
 
-    # if the face detector doesn't detect face
-    # return None, else if detects more than one faces
-    # keep the bigger and if it is only one keep one dim
     if len(te) == 0:
         return None
     elif len(te) > 1:
@@ -68,8 +65,6 @@ def cropEyes(frame):
     shape = predictor(gray, face_rect)
     shape = face_utils.shape_to_np(shape)
 
-    #  grab the indexes of the facial landmarks for the left and
-    #  right eye, respectively
     (rStart, rEnd) = face_utils.FACIAL_LANDMARKS_IDXS["left_eye"]
     (lStart, lEnd) = face_utils.FACIAL_LANDMARKS_IDXS["right_eye"]
 
@@ -77,24 +72,8 @@ def cropEyes(frame):
     leftEye = shape[lStart:lEnd]
     rightEye = shape[rStart:rEnd]
 
-
-    # keep the upper and the lower limit of the eye
-    # and compute the height
     l_uppery = min(leftEye[1:3, 1])
     l_lowy = max(leftEye[4:, 1])
-    l_dify = abs(l_uppery - l_lowy)
-
-    # compute the width of the eye
-    lw = (leftEye[3][0] - leftEye[0][0])
-
-    # we want the image for the cnn to be (26,34)
-    # so we add the half of the difference at x and y
-    # axis from the width at height respectively left-right
-    # and up-down
-    # minxl = (leftEye[0][0] - ((34 - lw) / 2))
-    # maxxl = (leftEye[3][0] + ((34 - lw) / 2))
-    # minyl = (l_uppery - ((26 - l_dify) / 2))
-    # maxyl = (l_lowy + ((26 - l_dify) / 2))
     minxl = leftEye[0][0]
     maxxl = leftEye[3][0]
     higl = (maxxl - minxl) / (24 / 24)
@@ -109,12 +88,6 @@ def cropEyes(frame):
     # same as left eye at right eye
     r_uppery = min(rightEye[1:3, 1])
     r_lowy = max(rightEye[4:, 1])
-    r_dify = abs(r_uppery - r_lowy)
-    rw = (rightEye[3][0] - rightEye[0][0])
-    # minxr = (rightEye[0][0] - ((34 - rw) / 2))
-    # maxxr = (rightEye[3][0] + ((34 - rw) / 2))
-    # minyr = (r_uppery - ((26 - r_dify) / 2))
-    # maxyr = (r_lowy + ((26 - r_dify) / 2))
     minxr = rightEye[0][0]
     maxxr = rightEye[3][0]
     higr = (maxxr - minxr) / (24 / 24)
@@ -146,7 +119,7 @@ def cnnPreprocess(img):
 
 @app.route('/api/upload', methods=['post'])
 def upload():
-    images = request.files.getlist('img[]')  # 获取上传的文件
+    images = request.files.getlist('img[]')  # a upload files
     print("******", images)
 
     if len(images):
@@ -163,15 +136,8 @@ def upload():
 
             try:
                 image.save(input)
-                #tool.img_resize_to_target_white(input, output)
-                #return send_from_directory('', output, as_attachment=True)
             except Exception as e:
                 print("Error: ", e)
-            # finally:
-            #     if os.path.exists(input):
-            #         os.remove(input)
-            #     if os.path.exists(output):
-            #         os.remove(output)
 
         # read first image as base image
         first_image_path = im[0]['path']
