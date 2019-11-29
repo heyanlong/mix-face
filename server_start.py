@@ -203,7 +203,7 @@ def upload():
             print(ok['prediction'])
             first_image = merge_image(first_image, ok['face']['image'], ok['face']['rect'])
 
-        cv2.putText(first_image, 'mix@magvii ' + time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())), (150, 150), cv2.FONT_HERSHEY_SIMPLEX, 5, (0, 0, 0), 5, cv2.LINE_AA)
+        cv2.putText(first_image, 'mix@yanlong ' + time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())), (150, 150), cv2.FONT_HERSHEY_SIMPLEX, 5, (0, 0, 0), 5, cv2.LINE_AA)
         cv2.imwrite("mix/dist/img/merged_image.jpg", first_image)
         return '{"code": 1000}'
     else:
